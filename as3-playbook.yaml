@@ -1,0 +1,32 @@
+---
+- name: AS3 playboook
+  hosts: localhost
+  connection: local
+  gather_facts: false 
+
+  vars:
+
+  vars_files:
+    - ../creds/bigip_pass.yaml
+
+  tasks:
+  - name: DEploy AS3 code
+    uri:
+      url: https://51.142.10.142:8443/mgmt/shared/appsvcs/declare
+      user: "{{username}}"
+      password: "{{password}}"
+      method: POST
+      body: "{{ lookup('file','as3.json') }}"
+      force_basic_auth: yes
+      status_code: 200
+      body_format: json
+      validate_certs: false
+    register: as3_output
+
+  - name: DEBUG output
+    debug:
+      msg: 'Output data {{as3_output}}'
+
+
+
+...
